@@ -12,4 +12,13 @@ router.get("/register", (req, res, next)=>{
   res.render("registrationForm")
 })
 
+
+router.post("/register", (req, res, next)=>{
+    User.create( req.body, (err, data)=>{
+      if(err) return next(err)
+      console.log(data)
+    })
+})
+
+
 module.exports = router;
