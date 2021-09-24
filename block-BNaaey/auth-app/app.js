@@ -4,6 +4,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require("mongoose")
+var session = require("express-session")
+var MongoStore = require('connect-mongo')
 
 mongoose.connect("mongodb://localhost/auth-app",(err)=>{
   console.log(err? err : "database is connected")
@@ -11,6 +13,8 @@ mongoose.connect("mongodb://localhost/auth-app",(err)=>{
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+
+// var loginRouter = require("./routes/login");
 
 
 
@@ -25,6 +29,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(session({
+  secret:"somerandomsecret",
+  saveUninitialized:false,
+  resave:false,
+  store: MongoStore.create({ mongoUrl: 'mongodb://localhost/auth-app' })
+
+
+}))
+
+
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
